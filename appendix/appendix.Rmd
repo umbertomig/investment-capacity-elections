@@ -1,0 +1,223 @@
+---
+title: |
+       | Supplementary Materials for "Investment Capacity and the Electoral Marketplace: Evidence from Brazil"
+author:
+- "Victor Araújo[^araujo]"
+- "Maurício Izumi[^izumi]"
+- "Fernando Limongi[^limongi]"
+- "Umberto Mignozzetti[^mignozzetti]"
+date: \today
+fontfamily: libertine
+fontawesome: yes
+fontsize: 11pt
+monospace-url: yes
+spacing: double
+papersize: a4paper
+bibliography: references.bib
+biblio-style: apalike
+always_allow_html: true
+output:
+  pdf_document:
+    citation_package: natbib
+    fig_caption: yes
+    number_sections: yes
+    toc: true
+    keep_tex: no
+    template: template.latex
+---
+
+\appendix
+
+[^araujo]: Ph.D. Candidate, Chair of Political Economy and Development, University of Zürich. Contact: <victor.araujo@pw.uzh.ch>.
+
+[^izumi]: Postdoctorate Research Associate at the Center for Public Economics, Getulio Vargas Foundation. Contact: <mauricio.izumi@fgv.br>.
+
+[^limongi]: Professor of the Department of Political Science, University of Sao Paulo and the Sao Paulo School of Economics, Getulio Vargas Foundation. Contact: <fdmplimo@usp.br>.
+
+[^mignozzetti]: Visiting Assistant Professor, Department of Quantitative Theory and Methods, Emory University, <umberto.mignozzetti@emory.edu>, <http://umbertomig.com>.
+
+```{r, include=FALSE}
+# Knitr options
+knitr::opts_chunk$set(fig.pos = "H") # holds figure position
+knitr::opts_chunk$set(echo = TRUE)
+def.chunk.hook  <- knitr::knit_hooks$get("chunk")
+knitr::knit_hooks$set(chunk = function(x, options) {
+  x <- def.chunk.hook(x, options)
+  ifelse(options$size != "normalsize", paste0("\n \\", options$size,"\n\n", x, "\n\n \\normalsize"), x)
+})
+```
+
+```{r, include=FALSE}
+## Starting
+set.seed(732578) # From random.org
+
+# Required packages
+pkgs <- c("rdrobust", "tidyverse", "stargazer",
+          "rdd", "haven", "xtable",
+          "broom", "GGally", "rddensity",
+          "grid", "gridExtra",'psych')
+
+# Install if not already installed
+install <- function(x) {
+  if (x %in% rownames(installed.packages()) == FALSE)
+    install.packages(x, dependencies = T,
+                     repos = "http://cran.us.r-project.org")
+}
+lapply(pkgs, install)
+
+# Load packages
+lapply(pkgs, require, character.only = T)
+
+# Cleaning up
+rm(pkgs, install)
+
+# Load dataset
+#load("../dataset/dataCoefs.RData")
+```
+
+\newpage
+
+# A Simple Model of Elections, Government, and Investment Capacity
+
+Let a strategic interaction between a politician, a firm, and a mass one of voters, that are responsive only to campaign expenditures.\footnote{@baron1989service refers to these voters as uninformed, and @grossman1996electoral refer to them as impressionable. In any sense, they are responsive for campaigning and not strong ideologically attached.}.
+
+In line with @klavsnja2015corruption and inspired by the findings of @klavsnja2017incumbency, we consider that there are two types of politicians: \textit{opportunistic politicians} and \textit{career concerned}.\footnote{In @klavsnja2017incumbency, term-limits coupled with weak parties are the principal explanation for incumbency disadvantage, as they consider a moral hazard from the part of politicians. Here, we abstract from these concerns as the term-limits does not restrict politicians from run to other offices. In Brazil, an excellent mayoral administration is an important step to move forward in the political career. Some cities in Brazil, such as Sao Paulo, are critical to exposing a politician that wants to become a state governor, a senator, or even a president.} The difference between them is that a career concerned politician wants to invest more in public services, as she knows that her relationship with voters and firms will span for a longer time than an opportunistic politician. The opportunistic politician prefers not to invest for at least three reasons. First, she wants to pocket most of the money, and invest in public services is only attractive when she can add kickbacks to procurement. Second, if invest is costly, she may prefer to shirk and not spend any resources. Finally, her contact with voters and firms will shorter than the career politicians, and so, she prefers to makes the most out of her election regarding rent-seeking opportunities. These types are private information of the individual politicians.
+
+Firms, on the other hand, look for an opportunity to provide services for the government as a for-profit enterprise. Firms then contribute to campaigns expecting to be compensated by the politicians by getting contracts and procurement. If they knew the politician's types, they would only contribute to long-term oriented politicians, as these politicians would keep investing in services, regardless of term limits. However, firms do not know whether the politician is an opportunistic or a career oriented one.
+
+For the interaction between these two players, we consider a game with the following sequential time-line:
+
+\begin{enumerate}
+\item Nature draws the type of the elected incumbent politician from a common-knowledge distribution.
+\item Politicians decide whether to invest or not in public services, hiring or not the firms. The term ends, and the re-election follows.
+\item Upon being hired or not, firms then decide whether to donate or not for the incumbents' re-election contest.
+\item If firms donate, then she wins the reelection, else, she retires.
+\item Payoffs are realized, and the game ends.
+\end{enumerate}
+
+Figure \ref{figgame1} depicts a simplified version of our argument as a simple signaling game.
+
+\begin{figure}[htbp]
+    \centering
+    \begin{tikzpicture}[scale=1.2,font=\footnotesize]
+    % Node styles
+    \tikzset{
+        solid node/.style={circle,draw,inner sep=3,fill=black},
+        hollow node/.style={circle,draw,inner sep=3}
+    }
+    % Specify spacing for each level of the tree
+    \tikzstyle{level 1}=[level distance=20mm,sibling distance=40mm]
+    \tikzstyle{level 2}=[level distance=20mm,sibling distance=0mm]
+    \tikzstyle{level 3}=[level distance=20mm,sibling distance=20mm]
+    % The Tree
+    \node(0)[hollow node,label=above:{$Nature$}]{}
+    child{node(1)[solid node,label=right:{I}]{}
+        child[grow=left]{node[label=left:{$u(R),-d$}]{} edge from parent node[above]{$nInv$}}
+        child{node(3)[solid node,label=above right:{F},label=below right:{$<1-q>$}]{}
+            child[grow=left]{node(4)[label=left:{ $B + u(R - \varepsilon)$, $f(\varepsilon)-d$ }]{} edge from parent node[above]{$nd$}}
+            child[grow=down]{node(5)[label=below:{$B + u(R-\varepsilon) + u(R)$, $f(\varepsilon) - 2d $}]{} edge from parent node[left]{$d$}}
+            edge from parent node[right]{$Inv$}}
+        edge from parent node[right, xshift=3]{$(1-\alpha)$}   
+        edge from parent node[left, xshift=-3]{$Short$}
+    }
+    child{node(2)[solid node,label=left:{I}]{}
+        child[grow=right]{node[label=right:{$u(R),-d$}]{} edge from parent node[above]{$nInv$}}
+        child{node(6)[solid node,label=above left:{F},label=below left:{$<q>$}]{}
+            child[grow=right]{node(7)[label=right:{$B + u(R - \varepsilon)$, $f(\varepsilon)-d$}]{} edge from parent node[above]{$nd$}}
+            child[grow=down]{node(8)[label=below:{$B+2u(R-\varepsilon) + L$, $2(f(\varepsilon) - d)$}]{} edge from parent node[right]{$d$}}
+        edge from parent node[right]{$Inv$}}
+        edge from parent node[left, xshift=-3]{$(\alpha)$}   
+        edge from parent node[right,xshift=3]{$Far$}
+    };
+    
+    \draw[dashed](3)to(6);
+    
+    \end{tikzpicture}
+    \caption{Extensive-Form Game for the politician-firm strategic interaction}
+    \label{figgame1}
+\end{figure}
+
+We assume that mayors, upon taking office, have $R>0$ resources to invest in public services. They then decide whether to pocket the investments, or they can proceed and hire the firms, paying $R$ for its services.\footnote{The pocketing assumption may be inaccurate for some situations, as we may consider that it is not easy for mayors to pocket money as they wish. In any case, this is similar to consider that mayors pay a cost whenever they want to invest, and some mayors might decide to do nothing, avoiding the costs embedded in working toward improving services.} As the Figure \ref{figgame1} suggest, if the politician does not invest any resources in public services, the Firm does not donate, and she is out of office, receiving $B$, which is the benefit from holding office once, and $R$, which represents the pocketed resources.
+
+Upon observing an investment, firms provide the public services, and then, at the following electoral period, they decide again whether they want to donate an amount $d>0$ for the incumbent, or not ($d=0$). As we are assuming that voters are only responsive for campaign expenditures, receiving more resources than the challenger would increase the incumbent's chances of getting reelected.
+
+The central tension in the model is that firms only want to donate for far-sighted politicians. Firms know that these politicians will hire them regardless of being lame-ducks, as they want to advance their political career. However, if they donate for short-sighted, they will not see the public investment in the second turn. This because the short-sighted politicians will pocket the money, and if they invest in the first term, it is just because they expect to pocket the resources in the second term.
+
+Let $q$ the belief that the Firms hold regarding the firm being far-sighted. The firm will donate for the incumbent if
+
+\[
+E[d,\ q] \ = \ q[2(R-d)] + (1-q)[R-2d] \ \geq \ R-d \ = \ E(nd, q)
+\]
+
+Solving this inequality leads us to the following threshold:
+
+\[
+q \ \geq \ \dfrac{d}{R} \ = \ \tilde{q}
+\]
+
+$\tilde{q}$ is the cutoff that limits the incentives for donation. If we study a pooling equilibrium, where both candidates invest in public services, it becomes easier to this equilibrium be theoretically sustainable, the smaller the $\tilde{q}$. Figure \ref{figeql1} summarizes the incentives.
+
+\begin{figure}[htb!]
+\centering
+    \includegraphics[scale=0.6]{../graphs/invCapacityTheory.pdf}
+    \caption{\emph{Investment Capacity and Donation Thresholds}}
+    \label{figeql1}
+\end{figure}
+
+The model has an equilibrium for pooling strategies, with incumbents always investing when $\alpha \geq \tilde{q}$ and never investing when $\alpha < \tilde{q}$. There is no equilibrium in separating strategies. To summarize our findings we have the following proposition.
+
+\begin{proposition}
+If the municipal investment capacity increases, then the likelihood of receiving a donation from the firm also increases.
+\end{proposition}
+
+The proof follows straightforwardly from the $\tilde{q}$ definition. When $R$ increases, $\tilde{q}$ decreases. The range between $[\tilde{q}, 1]$, that depicts the incumbency advantage range, also increases.
+
+\begin{corollary}
+If the municipal investment capacity increases, then the chance of getting reelected increases.
+\end{corollary}
+
+The corollary follows from the fact that increasing the campaign resources also increases the chance that incumbents will spend more than challengers. This increases their reelection prospective when the electorate is impressionable.
+
+Note that this simple model can be extended to add randomness in the investment capacity, or in the voter's utility. In the first case, we could make $R$ a random draw from a continuous distribution, with finite support. The strategy from the politicians' perspective would be to invest $R$ when the politician is career concerned. When the politician is opportunistic, she invests a fraction of $R$, enough to make the firm indifferent between donating or not. The optimal donation strategy would be to donate with an increasing probability, conditional on the amount of resources received.
+
+From the voter's perspective, we could add public service provision concern or ideological voting. In the first case, the adverse electoral effects of investment capacity would come from two places: the campaign investments and the low service provision. Adding ideology would not change things substantially, as politicians would set their ideal policies at the median. Both extensions are available upon request.
+
+\newpage
+
+# Budget Process in Brazilian Municipalities
+
+The Brazilian federalism is commonly defined as a centripetal political union arrange [@arretche2010federalism; @beramendi2012political]. First, municipalities are required by law to implement public policies in areas such as health and education according to the federal government specific guidelines. Second, most of the local level taxes are collected by the federal government and then redistributed among states and municipalities. Third, municipalities have low discretion to create taxes and contributions. 
+
+The decision on the allocation of the budget at the local level is composed of two steps. First, the executive branch defines the priorities based on the municipalities needs and the resources available. Second, politicians in the city council vote the executive budget spending proposal. Since the government coalitions with majorities is a hallmark of the Brazilian local politics [@santos2013topografia], it is implausible that the final budget proposal does not reflect the executive branch preferences. However, the investment capacity of municipalities is limited.
+
+The Brazilian municipalities heavily depend on federal government transfers due to their low fiscal capacity. For instance, in 2015, 92\% of municipalities have more than 70\% of their budget composed by federal transfers\footnote{Available at http://publicacoes.firjan.org.br/ifgf/2015/files/assets/common/downloads/publication.pdf [Accessed 05 May 2019].}. To mitigate the problem of low investment capacity of municipalities, the Brazilian Congress created a rule to limit municipalities spending. The law of fiscal responsibility (Lei de Responsabilidade Fiscal), implemented in 2000, sets maximum limits (54\%) on public budget levels for personnel payrolls, which creates incentives to mayors prioritize investments in infrastructure provision. Municipalities, however, continue to face challenges to fulfill this expectation. In 2015, on average, municipalities spent only 9\% of their budget with infrastructure provision. By contrast, they spent 54\% of their budget with personnel payrolls\footnote{Available at http://publicacoes.firjan.org.br/ifgf/2015/files/assets/common/downloads/publication.pdf [Accessed 05 May 2019].}.
+
+# Data Sources
+
+# Summary Statistics
+
+# Identification Strategy
+
+# Covariate Smoothness and Threshold Manipulation Tests
+
+# Main Paper Results
+
+# Robustness
+
+## Main Results with Covariates as Controls
+
+## Placebo Cutoffs
+
+## Sensitivity to Bandwidth Selection
+
+## Sensitivity to Polynomial Degree
+
+## Party-centered Alternative Explanations
+
+## Federal Transfer's Thresholds: a Double RDD Approach
+
+# Session Information
+
+```{r, size = "footnotesize"}
+sessionInfo()
+```
