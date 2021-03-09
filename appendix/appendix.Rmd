@@ -192,11 +192,97 @@ The decision on the allocation of the budget at the local level is composed of t
 
 The Brazilian municipalities heavily depend on federal government transfers due to their low fiscal capacity. For instance, in 2015, 92\% of municipalities have more than 70\% of their budget composed by federal transfers\footnote{Available at http://publicacoes.firjan.org.br/ifgf/2015/files/assets/common/downloads/publication.pdf [Accessed 05 May 2019].}. To mitigate the problem of low investment capacity of municipalities, the Brazilian Congress created a rule to limit municipalities spending. The law of fiscal responsibility (Lei de Responsabilidade Fiscal), implemented in 2000, sets maximum limits (54\%) on public budget levels for personnel payrolls, which creates incentives to mayors prioritize investments in infrastructure provision. Municipalities, however, continue to face challenges to fulfill this expectation. In 2015, on average, municipalities spent only 9\% of their budget with infrastructure provision. By contrast, they spent 54\% of their budget with personnel payrolls\footnote{Available at http://publicacoes.firjan.org.br/ifgf/2015/files/assets/common/downloads/publication.pdf [Accessed 05 May 2019].}.
 
+\newpage
+
 # Data Sources
+
+We collect data on Brazilian elections and municipal investment capacity from 2000 to 2012. We report below the data sources with the link for helping with the replication of these results.
+
+\begin{table}[htb!]
+\centering
+\caption{Data Sources}
+\scalebox{0.75}{
+\begin{tabular}{lll} 
+\hline
+\textbf{Webpage}        & \textbf{Sources}                                & \textbf{Acronyms}  \\ 
+\hline
+\url{https://www.ibge.gov.br}       & Brazilian Institute of Geography and Statistics & IBGE               \\
+\url{http://www.tse.jus.br}         & Superior Electoral Tribunal                     & TSE                \\
+\url{https://cebrap.org.br}         & Brazilian Center of Analysis and Planning       & CEBRAP             \\
+\url{https://www.firjan.com.br/pagina-inicial.htm} & Rio de Janeiro Industry Federation              & FIRJAN             \\
+\url{http://www.ipeadata.gov.br/Default.aspx}      & Brazilian Institute of Economics Research       & IPEA               \\
+\hline
+\end{tabular}
+}
+\end{table}
+
+A short description of each variable follows in the Tables below.
+
+\pagebreak
+
+\begin{table}[htb!]
+\centering
+\scalebox{0.5}{
+\begin{tabular}{lp{4in}p{0.8in}p{4in}p{2in}}
+\hline\hline
+\textbf{Variable} & \textbf{Description} & \textbf{Original Source} & \textbf{Manipulation} & \textbf{Observations} \\\hline
+electionMunic  & Mayoral election year and TSE code for municipalities (for clustering purposes). & TSE & Merging the variable "election" with the variable "munCodeTSE".\\\hline
+election & Mayoral election year. & TSE & None & Years 2000, 2004, and 2008. This means that the elections considered are the 2004, 2008, and 2012.\\\hline
+munCodeTSE & Superior Electoral Tribunal (TSE) municipal codes. & TSE & None & \\\hline
+munCodeIBGE & Brazilian Institute of Geography and Statistics (IBGE) 6-digit municipal codes. & IBGE & None & \\\hline
+candName & Candidate's name. & TSE & None & \\\hline
+state & State 2-character code. & TSE & None & \\\hline
+munName & Municipality name. & TSE & None & \\\hline
+candParty & Brazilian Acronym for the Candidate's political party.  & TSE & None  & \\\hline
+elecNext & Candidate's reelection in year t+4 (dummy). & TSE & None & \\\hline
+campaignResources & Candidate's total campaign resources in year t+4. & TSE & None &  \\\hline
+propVot & Vote margin between the winner and the runner-up (running variable). & TSE & Computed from the TSE vote counting for Winner and Runner-up Candidates. & \\\hline
+elected & Election winner (dummy). & TSE & None  & \\\hline
+elecBefore & Elected before in t-4 (dummy). & TSE & None  & \\\hline
+donationRecipient & Candidate received funds (dummy). & TSE & None  & \\\hline
+partyPT & Municipality with a candidate from PT (dummy). & TSE & Computed from TSE Candidate party Acronym. & \\\hline
+partyPSDB & Municipality with a candidate from PSDB (dummy). & TSE & Computed from TSE Candidate party Acronym. & \\\hline
+partyDEM & Municipality with a candidate from DEM (dummy). & TSE & Computed from TSE Candidate party Acronym. & \\\hline
+partyPP & Municipality with a candidate from PP (dummy).  & TSE & Computed from TSE Candidate party Acronym. & \\\hline
+partyPTB & Municipality with a candidate from PTB (dummy). & TSE & Computed from TSE Candidate party Acronym. & \\\hline
+partyPDT & Municipality with a candidate from PDT (dummy). & TSE & Computed from TSE Candidate party Acronym. & \\\hline
+partyPSB & Municipality with a candidate from PSB (dummy). & TSE & Computed from TSE Candidate party Acronym. & \\\hline
+femaleCand & Female (dummy). & TSE & Computed from TSE Candidate information. & \\\hline
+candMD & Physician (dummy). & TSE & Computed from TSE Candidate information. & \\\hline
+candBusiness & Businessman(dummy). & TSE & Computed from TSE Candidate information. & \\\hline
+candLawyer & Lawyer (dummy). & TSE & Computed from TSE Candidate information. & \\\hline
+candCollegeDegree & College degree (dummy). & TSE & Computed from TSE Candidate information. & \\\hline
+aboveMedianAge & Candidate above the median age (dummy). & TSE & Computed from TSE Candidate information. & \\\hline
+incAndChalGov & Municipality with an incumbent and the challengers from parties in the Federal government coalition (dummy). & Cebrap and TSE  & Computed considering the party that composed the Federal Coalition at the election year. & \\\hline
+incAndChalOposition & Municipality with an incumbent and the challengers from parties in the Federal government opposition coalition (dummy). & Cebrap and TSE  & Computed considering the party that composed the Federal Coalition at the election year. & \\\hline
+incGovChalOpos & Municipality with an incumbent in the Federal government coalition party and challenger in the opposition party (dummy). & Cebrap and TSE  & Computed considering the party that composed the Federal Coalition at the election year. & \\\hline
+incOposChalGov & Municipality with an incumbent in the opposition party and a challenger in a federal government coalition party (dummy). & Cebrap and TSE & Computed considering the party that composed the Federal Coalition at the election year. & \\\hline
+InvExpPerOverRev & One minus the proportion of the revenue spent with personnel: active and pensions. & IPEAData & Ratio between Municipal Personnel Expenditure and Municipal Revenue. & Data averaged for four year time-span. The year 2012 is absent from the dataset, so we consider the period 2008 to 2011 in the last election. \\\hline
+aboveMedInvExpPerOverRev & Above Median of the inverse proportion of the revenue spent with personnel (dummy). & IPEAData & Dummy equals 1 if above the median of "InvExpPerOverRev". & \\\hline
+InvQuartileExpPerOverRev & Quartile index of inverse proportion of revenue spend with personnel.  & IPEAData & Position of the quartile, ranging from 1 (0 to 1st quartile), to 4 (third quartile) in the ratio between municipal personnel expenditure and municipal revenue.  & \\\hline
+frlClassification & Classification of the Municipal Fiscal Healthy based on the Brazilian Fiscal Responsibility Law (Complementary Law 101 - 05/04/2000). & IPEAData & If the ratio between personnel expenditure and revenue is above 0.54 the state is considered "SEVERE", and the municipality may be punished; between 0.514 and 0.54, the municipality is in the "CRITICAL" zone; if the expenditure with personnel is between 0.4874 and 0.514, the municipal is in "ALERT"; below 0.4874 the fiscal health is "OK". & Data averaged for four year timespan. The year 2012 is absent from the dataset, so we consider the period 2008 to 2011 in the last election.  \\\hline
+firjLiqIndex & Rio de Janeiro Industry Federation index of municipal liquidity. & FIRJAN & None & Data averaged from 2006, when the index started, to 2012. Missing data for the first election. \\\hline
+aboveMedianFirjLiqIndex  & Above Median of Rio de Janeiro Industry Federation index of municipal liquidity (dummy) & FIRJAN          & Dummy equals 1 if above the median for the variable "firjLiqIndex". & \\\hline
+quartileFirjLiqIndex & Quartile of the Rio de Janeiro Industry Federation index of municipal liquidity index. & FIRJAN & Position of the quartile, ranging from 1 (0 to 1st quartile), to 4 (third quartile) in the FIRJAN liquidity index. & \\\hline\hline
+\end{tabular}
+}
+\caption{Variable Descriptions and Codebook}
+\label{vardatasourc}
+\end{table}
+
+\pagebreak
 
 # Summary Statistics
 
 # Identification Strategy
+
+Electoral results depend heavily on the efforts and resources employed by the candidates. However, candidates are unable to manipulate the vote share they will receive precisely. Elections decided by a small vote margin have a strongly random component, and in some of those elections, it was ex-ante unpredictable who would win the contest. Therefore, candidates that lose by a small vote margin serve as a suitable account for those candidates who were elected by a small margin of votes \citep{imbens2008regression}.
+
+From 2000 to 2012, the RD running variable is the vote margin difference between the two most voted candidates. The differences between the electoral winners and immediate losers in consecutive terms, compared with the candidates that lost and then won or vice-versa, raises problems concerning the endogeneity of the reelection running decision \citep{song2018estimating}. \citet{magalhaes2015incumbency} addresses this selection problem proposing an outcome variable that takes value one ($1$) if the candidate reruns and wins in the next election, but takes value zero ($0$) if the candidate loses or drops the race. With this strategy, we can measure the outcome effects even when rerunning is not widespread and the RD estimates the incumbency effect on the probability of winning the next election, unconditional on rerunning. We estimate the incumbency effect on the probability of receiving campaign finance resources from firms unconditional to the fact that the candidate is rerunning in the next election.
+
+The regression discontinuity design uses the arbitrary change vote share, with a sharp discontinuity when is positive versus negative, meaning that the candidate wins or lose, to estimate the causal effect. We use a local-linear polynomial estimate with a triangular kernel distance to the cutoff weighting (putting more weight to cases closer to the cutoff) and computing the optimal bandwidth using the \citet{calonico2014robust} MSE-robust data-driven optimal bandwidth.\footnote{As robustness checks we run the same regressions varying the polynomial degree from linear to a quartic, the optimal bandwidth using \citet{calonico2014robust} and \citet{imbens2011optimal}, and inserting versus taking off the pre-treatment covariates \citet{calonico2016regressioncov}. We cluster all standard errors at the municipal level, as the elections occurs at the municipality. All the results are available in the Appendix.}
+
+The validity of our causal claim requires the empirical strategy to satisfy two assumptions: no endogenous manipulations, such as frauds, and the pre-treatment variables continuity. We show below that there are no sign of manipulations and all the pre-treatment variables such as the candidates' gender, age, profession, and party labels, were not statistically significant. These results reinforce that our empirical strategy is solid.
 
 # Covariate Smoothness and Threshold Manipulation Tests
 
